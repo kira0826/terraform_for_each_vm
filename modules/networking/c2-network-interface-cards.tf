@@ -1,29 +1,22 @@
-resource "azurerm_public_ip" "devops_ip" {
-    for_each = var.servers
-    name                = "${each.value}-public-ip"
-    location            = var.location
-    resource_group_name = var.resource_group_name
-    allocation_method   = "Static"
-}
 
-resource "azurerm_network_interface" "devops_nic" {
-    for_each = var.servers
+resource "azurerm_network_interface" "devops_nic" { 
+    for_each = var.servers_network
     name                = "${each.value}-nic"
-    location            = var.location
-    resource_group_name = var.resource_group_name
+    location            = var.location_netwrok
+    resource_group_name = var.resource_group_name_network
 
     ip_configuration {
     name                          = "${each.value}-configuration"
-    subnet_id                     = var.subnet_id
+    subnet_id                     = azurerm_subnet.main.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.devops_ip[each.value].id
     }
 }
 
 resource "azurerm_network_security_group" "devops_sg" {
-    name                = "${var.prefix_name}-sg"
-    location            = var.location
-    resource_group_name = var.resource_group_name
+    name                = "${var.prefix_name_network}-sg"
+    location            = var.location_netwrok
+    resource_group_name = var.resource_group_name_network
 
     security_rule {
         name                       = "SSH"
@@ -61,35 +54,7 @@ resource "azurerm_network_security_group" "devops_sg" {
 }
 
 resource "azurerm_network_interface_security_group_association" "devops_association" {
-    for_each = var.servers
+    for_each = var.servers_network
     network_interface_id      = azurerm_network_interface.devops_nic[each.value].id
     network_security_group_id = azurerm_network_security_group.devops_sg.id
-}
-
-resource "azurerm_linux_virtual_machine" "vm_devops" {
-    for_each = var.servers
-    name = "${each.value}-machine"
-    resource_group_name = var.resource_group_name
-    location = var.location
-    size = var.size_servers
-    network_interface_ids = [azurerm_network_interface.devops_nic[each.value].id]
-    disable_password_authentication = false
-    admin_username = var.user
-    admin_password = var.password
-
-    source_image_reference {
-        publisher = "Canonical"
-        offer = "UbuntuServer"
-        sku = "16.04-LTS"
-        version = "latest"
-    }
-
-
-    os_disk {
-        caching = "ReadWrite"
-        storage_account_type = "Standard_LRS"
-    }
-
-    depends_on = [azurerm_network_interface_security_group_association.devops_association]
-
 }

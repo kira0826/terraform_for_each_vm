@@ -19,7 +19,7 @@ variable "password" {
 }
 
 variable "servers" {
-  type        = list(string)
+  type        = set(string)
   description = "nombre de los servidores que se van a desplegar"
 }
 

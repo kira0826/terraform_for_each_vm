@@ -19,11 +19,6 @@ variable "location" {
     description = "region"
 }
 
-variable "subnet_id" {
-    type = string
-    description = "id de la subnet de los servidores"
-}
-
 variable "user" {
     type = string
     description = "usuario ssh"
@@ -37,4 +32,8 @@ variable "password" {
 variable "prefix_name" {
     type = string
     description = "prefijo de los recursos"
+}
+
+variable "network_interface_ids_from_networking" {
+  type = map(string)
 }
