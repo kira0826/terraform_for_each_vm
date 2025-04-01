@@ -1,0 +1,10 @@
+ip_servers = [
+  {
+    "ip" = "20.185.149.198"
+    "name" = "frontend-public-ip"
+  },
+  {
+    "ip" = "20.185.54.33"
+    "name" = "pipelines-public-ip"
+  },
+]
