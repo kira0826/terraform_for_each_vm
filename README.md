@@ -45,7 +45,7 @@ All services are fully automated for out-of-the-box functionality.
 
 https://github.com/kira0826/ansible-pipeline
  
- ## Infrastructure Management
+# Infrastructure Management Segment
 
 Infrastructure is managed using **Terraform** with the **Azurerm** provider, structured into three modular and reusable components:
 
