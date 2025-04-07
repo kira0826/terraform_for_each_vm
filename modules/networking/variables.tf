@@ -29,3 +29,4 @@ variable "subnet_address" {
   type        = string
   description = "prefijo para nombres de recursos"
 }
+

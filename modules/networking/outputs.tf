@@ -7,5 +7,12 @@ output "network_interface_ids" {
 
 output "ip_servers" {
     description = "IP de los servidores"
-    value = [for server in azurerm_public_ip.devops_ip : {"name": server.name, "ip" : server.ip_address}]
+    value = [for server in azurerm_public_ip.devops_ip : {"name": server.name,"ip" : server.ip_address}]
 } 
+
+output "devops_vm_ip" {
+
+    description = "Devops VM IP"
+    value = azurerm_public_ip.devops_ip["pipelines"].ip_address
+  
+}

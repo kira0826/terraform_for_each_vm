@@ -27,3 +27,28 @@ variable "subscription_id" {
   type        = string
   description = "id de la suscripción"
 }
+
+# Github variables
+
+variable "github_token" {
+
+  type        = string
+  description = "token de github"
+  
+}
+
+variable "github_owner" {
+  type        = string
+  description = "owner de github"
+}
+
+variable "github_repo" {
+  description = "Nombre del repositorio"
+  type        = string
+}
+
+variable "webhook_secret" {
+  description = "Secret para el webhook"
+  type        = string
+  sensitive   = true
+}
