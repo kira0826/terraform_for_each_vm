@@ -1,4 +1,51 @@
-﻿## Infrastructure Management
+# Connection with other projects
+
+### Frontend, Jenkinsfile, and GitHub Actions Workflow
+
+The [Teclado repository](https://github.com/kira0826/Teclado/) contains the entire frontend, which is deployed to a virtual machine using **Nginx**. The deployment is triggered by a **Jenkinsfile** executed by a Jenkins server hosted in a VM. This deployment process is automatically triggered after a **push to the `main` branch**, which can only occur **after a pull request is approved**.
+
+Additionally, the repository includes a **GitHub Actions workflow** that runs whenever a pull request is created. This workflow performs a **code analysis using a SonarQube server**, which is deployed in the same VM as Jenkins. The results of the analysis are posted as comments on the pull request. Approval is **blocked until the analysis comments are available**, enforcing code quality gates.
+
+A **Terraform-created webhook** notifies the Jenkins server whenever a push occurs in the frontend repository.
+
+📁 [GitHub – kira0826/Teclado](https://github.com/kira0826/Teclado/)
+
+---
+
+### Provisioning with Ansible
+
+Two virtual machines are provisioned using **Ansible**:
+
+1. One dedicated to the **frontend deployment** using **Nginx**.
+2. One dedicated to **DevOps services**, running **Jenkins** and **SonarQube** in Docker containers.
+
+All services are fully automated for out-of-the-box functionality.
+
+- **Jenkins** is configured using **Configuration as Code (JCasC)** to automatically create plugins and pipeline jobs.
+- **SonarQube** setup includes automatic token generation through Ansible. This token is then securely added as a **GitHub secret** in the frontend repository, allowing GitHub Actions to authenticate and run code analysis pipelines.
+
+### Key Ansible Roles:
+
+1. **`devops_services`**
+    
+    Installs Docker Compose and starts containers for Jenkins, SonarQube, and PostgreSQL (used by SonarQube).
+    
+2. **`jenkins`**
+    
+    Automatically installs required Jenkins plugins via `plugins.txt` and sets up jobs using **Groovy scripts and JCasC**.
+    
+3. **`enable_nginx`**
+    
+    Prepares static frontend content, configures `nginx.conf` using templates, and exposes the application on port 80.
+    
+4. **`sonarqube`**
+    
+    Generates a SonarQube token and stores it as a **GitHub secret** in the frontend repository to enable code analysis during pull requests.
+    
+
+https://github.com/kira0826/ansible-pipeline
+ 
+ ## Infrastructure Management
 
 Infrastructure is managed using **Terraform** with the **Azurerm** provider, structured into three modular and reusable components:
 
